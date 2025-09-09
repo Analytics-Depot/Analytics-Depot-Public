@@ -1,0 +1,72 @@
+# Web Framework
+fastapi==0.116.1
+uvicorn[standard]==0.35.0
+python-multipart==0.0.20
+
+# Auth & Database Integration
+python-jose[cryptography]==3.5.0
+passlib[bcrypt]==1.7.4
+pydantic==2.11.7
+pydantic-settings==2.10.1
+email-validator==2.2.0
+
+# Database
+sqlalchemy==2.0.41
+alembic==1.16.4
+psycopg2-binary==2.9.10
+
+# Environment
+python-dotenv==1.1.1
+httpx==0.28.1
+
+# AI/ML
+openai==1.97.0
+
+# Security
+cryptography==45.0.5
+bcrypt==4.3.0
+PyJWT==2.10.1
+
+# Payment Processing
+stripe==11.2.0
+
+# Data Processing
+pandas==2.3.1
+numpy==2.2.6
+beautifulsoup4==4.13.4
+python-docx==1.2.0
+PyPDF2==3.0.1
+openpyxl==3.1.5
+chardet==5.2.0
+
+# Enhanced Document Processing - Basic version first
+docling==2.41.0
+# OCR backends - install separately to avoid conflicts
+easyocr==1.7.2
+psutil==7.0.0
+
+# HTTP
+requests==2.32.4
+
+# Production server
+gunicorn==23.0.0
+
+# Testing dependencies
+pytest==8.4.1
+pytest-asyncio==1.1.0
+pytest-mock==3.14.1
+factory-boy==3.3.3
+pytest-cov==6.2.1
+pytest-xdist==3.8.0
+
+# LLM Agent
+tavily-python== 0.7.10
+langchain==0.3.26
+langchain-tavily==0.2.10
+langgraph==0.5.3
+langchain-openai== 0.3.28
+
+# Supabase
+supabase==2.17.0
+
+slowapi==0.1.9

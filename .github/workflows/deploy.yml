@@ -1,0 +1,164 @@
+name: Deploy Analytics Depot to VPS
+
+on:
+  push:
+    branches: [master, main]
+  workflow_dispatch: # Enable manual triggering
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+
+    steps:
+      # Step 1: Check out the repository
+      - uses: actions/checkout@v4
+
+      # Step 2: Pull the latest code from the main branch
+      - name: Pull latest code
+        run: |
+          cd ~/apps/analytics-depot
+          git pull origin master
+
+      # Step 3: Setup Environment Files
+      - name: Setup Environment Files
+        run: |
+          cd ~/apps/analytics-depot
+
+          echo "=== Setting up environment files ==="
+
+          # Backend environment setup
+          if [ -f backend/.env.production ]; then
+            echo "✅ Using backend production environment file"
+            cp backend/.env.production backend/.env
+          elif [ -f .env.production ]; then
+            echo "✅ Using root production environment file for backend"
+            cp .env.production backend/.env
+          else
+            echo "⚠️ No production environment file found for backend"
+          fi
+
+          # Frontend environment setup
+          if [ -f frontend/.env.production ]; then
+            echo "✅ Using frontend production environment file"
+            cp frontend/.env.production frontend/.env
+          elif [ -f frontend/.env.local.production ]; then
+            echo "✅ Using frontend local production environment file"
+            cp frontend/.env.local.production frontend/.env.local
+          else
+            echo "⚠️ No production environment file found for frontend"
+          fi
+
+          # Verify environment files exist
+          echo "=== Environment Files Status ==="
+          if [ -f backend/.env ]; then
+            echo "✅ Backend .env file ready"
+          else
+            echo "❌ Backend .env file missing"
+          fi
+
+          if [ -f frontend/.env ] || [ -f frontend/.env.local ]; then
+            echo "✅ Frontend environment file ready"
+          else
+            echo "❌ Frontend environment file missing"
+          fi
+
+      # Step 4: Check current container status
+      - name: Check Current Status
+        run: |
+          cd ~/apps/analytics-depot
+          echo "=== Current Container Status ==="
+          docker-compose ps
+          echo "=== Container Health ==="
+          docker-compose ps --format "table {{.Name}}\t{{.Status}}\t{{.Ports}}"
+
+      # Step 5: Build and deploy with Docker Compose
+      - name: Deploy with Docker Compose
+        run: |
+          cd ~/apps/analytics-depot
+
+          echo "=== Building updated images ==="
+          # Build images with latest changes
+          docker-compose build --no-cache
+
+          echo "=== Stopping existing containers ==="
+          # Stop existing containers gracefully
+          docker-compose down
+
+          echo "=== Starting services ==="
+          # Start services in detached mode
+          docker-compose up -d
+
+          echo "=== Waiting for services to initialize ==="
+          # Wait for services to be ready
+          sleep 30
+
+      # Step 6: Health checks and container status
+      - name: Health Check and Status
+        run: |
+          cd ~/apps/analytics-depot
+
+          echo "=== Final Container Status ==="
+          docker-compose ps
+
+          echo "=== Container Health Details ==="
+          docker-compose ps --format "table {{.Name}}\t{{.Status}}\t{{.Ports}}"
+
+          echo "=== Recent Container Logs ==="
+          docker-compose logs --tail=10 backend
+          docker-compose logs --tail=10 frontend
+
+          echo "=== Service Health Checks ==="
+          # Check backend health (internal container network)
+          docker-compose exec -T backend curl -f http://localhost:8000/docs || echo "❌ Backend internal health check failed"
+
+          # Check frontend health (internal container network)
+          docker-compose exec -T frontend curl -f http://localhost:3000 || echo "❌ Frontend internal health check failed"
+
+          # Check database connectivity
+          docker-compose exec -T db pg_isready -U postgres || echo "❌ Database health check failed"
+
+          echo "=== External Health Checks ==="
+          # Check if services are accessible from host (if ports are exposed)
+          curl -f http://localhost:8000/docs || echo "ℹ️ Backend not exposed on host port 8000"
+          curl -f http://localhost:3000 || echo "ℹ️ Frontend not exposed on host port 3000"
+
+      # Step 7: Docker cleanup
+      - name: Docker Cleanup
+        run: |
+          echo "=== Cleaning up Docker resources ==="
+          # Remove unused images to save space
+          docker image prune -f
+
+          # Remove unused containers
+          docker container prune -f
+
+          # Remove unused networks
+          docker network prune -f
+
+          # Remove unused volumes (be careful with this in production)
+          # docker volume prune -f
+
+          echo "=== Docker System Status ==="
+          docker system df
+
+          echo "=== Final Container Status ==="
+          cd ~/apps/analytics-depot
+          docker-compose ps
+
+      # Step 8: Deployment Summary
+      - name: Deployment Summary
+        run: |
+          cd ~/apps/analytics-depot
+          echo "=== DEPLOYMENT SUMMARY ==="
+          echo "✅ Code updated from repository"
+          echo "✅ Docker images rebuilt"
+          echo "✅ Containers restarted"
+          echo "✅ Health checks completed"
+          echo ""
+          echo "=== CONTAINER STATUS ==="
+          docker-compose ps --format "table {{.Name}}\t{{.Status}}\t{{.Ports}}"
+          echo ""
+          echo "===  NEXT STEPS ==="
+          echo "- Check your website at analyticsdepot.com"
+          echo "- Monitor logs with: docker-compose logs -f"
+          echo "- Check status with: docker-compose ps"

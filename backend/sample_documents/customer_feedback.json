@@ -1,0 +1,54 @@
+{
+  "feedback_data": [
+    {
+      "id": 1,
+      "date": "2024-01-01",
+      "customer_id": "C001",
+      "product": "Laptop",
+      "rating": 4.5,
+      "sentiment": "positive",
+      "category": "Product Quality",
+      "comment": "Great performance and battery life. The screen could be brighter."
+    },
+    {
+      "id": 2,
+      "date": "2024-01-02",
+      "customer_id": "C002",
+      "product": "Desk Chair",
+      "rating": 3.0,
+      "sentiment": "neutral",
+      "category": "Comfort",
+      "comment": "Comfortable but assembly instructions were unclear."
+    },
+    {
+      "id": 3,
+      "date": "2024-01-03",
+      "customer_id": "C003",
+      "product": "Coffee Maker",
+      "rating": 5.0,
+      "sentiment": "positive",
+      "category": "Ease of Use",
+      "comment": "Perfect coffee every time! Very easy to use and clean."
+    },
+    {
+      "id": 4,
+      "date": "2024-01-04",
+      "customer_id": "C004",
+      "product": "Monitor",
+      "rating": 2.0,
+      "sentiment": "negative",
+      "category": "Product Quality",
+      "comment": "Dead pixels after one week of use. Disappointing quality."
+    },
+    {
+      "id": 5,
+      "date": "2024-01-05",
+      "customer_id": "C005",
+      "product": "Headphones",
+      "rating": 4.8,
+      "sentiment": "positive",
+      "category": "Sound Quality",
+      "comment": "Exceptional sound quality and noise cancellation. Worth every penny!"
+    }
+  ]
+} 

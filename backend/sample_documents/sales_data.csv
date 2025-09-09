@@ -1,0 +1,11 @@
+Date,Product,Category,Quantity,Price,Total,Region
+2024-01-01,Laptop,Electronics,5,999.99,4999.95,North
+2024-01-01,Smartphone,Electronics,10,599.99,5999.90,South
+2024-01-02,Desk Chair,Furniture,8,199.99,1599.92,East
+2024-01-02,Coffee Maker,Appliances,15,79.99,1199.85,West
+2024-01-03,Monitor,Electronics,12,299.99,3599.88,North
+2024-01-03,Desk,Furniture,6,399.99,2399.94,South
+2024-01-04,Keyboard,Electronics,20,49.99,999.80,East
+2024-01-04,Mouse,Electronics,25,29.99,749.75,West
+2024-01-05,Printer,Electronics,7,199.99,1399.93,North
+2024-01-05,Headphones,Electronics,30,89.99,2699.70,South 
